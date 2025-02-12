@@ -17,7 +17,7 @@ class List{
     Node* tail;
 
     public:
-    List(){
+    List(){     //just a default constructor to initialize
         head=tail=NULL;
     }
     //Operations:
