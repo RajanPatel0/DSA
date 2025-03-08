@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//Span: consecutive min previous from current
 
 int main(){
     vector<int> price={100,80,60,70,60,75,85};
