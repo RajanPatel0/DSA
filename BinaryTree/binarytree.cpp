@@ -9,7 +9,7 @@ class Node{
     Node* left;
     Node* right;
 
-    Node(int d){    //constructor
+    Node(int d){    //constructor as default
         this->data=d;
         this->left=NULL;
         this->right=NULL;
