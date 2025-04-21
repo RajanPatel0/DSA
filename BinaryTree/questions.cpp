@@ -2,6 +2,7 @@
 #include<vector>
 #include<queue>
 #include<algorithm>
+#include<map>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ class Node{
             left=right=NULL;
         }
 };
-
+ 
 static int idx=-1;
 Node* BuildTree(vector<int> preOrder){
     idx++;
@@ -60,6 +61,35 @@ int sumOfNodes(Node* root){
     return leftSum+rightSum+root->data;
 }
 
+int topView(Node* root){    //via level order traversal
+    queue<pair<Node*, int>>q;   //(Node, HD)
+    map<int,int>m;    //(HD, node val)
+    q.push({root,0});
+
+    while(!q.empty()){
+        Node* temp=q.front().first;
+        int tempHD=q.front().second;
+        q.pop();
+
+        if(m.find(tempHD)==m.end()){    //agr nhi milta hai
+            m[tempHD]=temp->data;
+        }
+
+        if(temp->left){
+            q.push({temp->left,tempHD-1});
+        }
+        if(temp->right){
+            q.push({temp->right, tempHD+1});
+        }
+    }
+
+    for(auto it:m){
+        cout<<it.second<<" ";
+    }
+    cout<<endl;
+
+}
+
 int main(){
 
     Node*root=NULL;
@@ -76,6 +106,9 @@ int main(){
 
     //3. Find Sum of Binary Tree
     cout<<"Sum: "<<sumOfNodes(root)<<endl;
+
+    //4. Top View Printing of Binary Tree
+    topView(root);
 
     return 0;
 }
