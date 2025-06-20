@@ -99,6 +99,17 @@ void levelOrder(Node* root){
     cout<<endl;
 }
 
+//Transform to SumTree 
+int sumTree(Node* root){
+    if(root==NULL){
+        return 0;
+    }
+    int leftSum=sumTree(root->left);
+    int rightSum=sumTree(root->right);
+    root->data+=leftSum+rightSum;
+    return root->data;
+}
+
 int main(){
         vector<int> preOrder={1,2,-1,-1,3,4,-1,-1,5,-1,-1};
 
@@ -108,16 +119,23 @@ int main(){
         cout<<root->data<<endl;
         cout<<root->left->data<<endl;
     
+        cout<<"before conversion: "<<endl; 
         preorder(root);
         cout<<endl;
 
-        inorder(root);
-        cout<<endl;
+        // inorder(root);
+        // cout<<endl;
 
-        postorder(root);
-        cout<<endl;
+        // postorder(root);
+        // cout<<endl;
 
-        levelOrder(root);
+        // levelOrder(root);
+
+        sumTree(root);
+
+        cout<<"after conversion: "<<endl; 
+        preorder(root);
+        cout<<endl;
 
 
     return 0;
