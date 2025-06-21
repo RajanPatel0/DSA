@@ -3,6 +3,7 @@
 #include<queue>
 #include<algorithm>
 #include<map>
+#include<string>
 
 using namespace std;
 
@@ -87,7 +88,6 @@ int topView(Node* root){    //via level order traversal-TC: O(nlogn)
         cout<<it.second<<" ";   //& here's m.second prints node val of that hor.dist. based node
      }
     cout<<endl;
-
 }
 
 void kthlevel(Node* root,int k){
@@ -132,7 +132,7 @@ Node* buildTree(vector<int>& pre, vector<int>&in,int& preIdx, int left, int righ
 //Transform to Sum Tree= node = node val+ left subtree value + right subtree value
 int sumTree(Node* root){
     if(root==NULL){
-        return NULL;
+        return 0;
     }
     int leftSum=sumTree(root->left);
     int rightSum=sumTree(root->right);
@@ -141,6 +141,27 @@ int sumTree(Node* root){
 }
 
 //LC_257:Binary Tree Path - returning all possible path i.e. are from root to leaf node
+void allPaths(Node* root, string path, vector<string>& ans) {
+    if (!root->left && !root->right) {
+        ans.push_back(path);
+        return;
+    }
+
+    if (root->left) {
+        allPaths(root->left, path + "->" + to_string(root->left->data), ans);
+    }
+
+    if (root->right) {
+        allPaths(root->right, path + "->" + to_string(root->right->data), ans);
+    }
+}
+vector<string> binaryTreePaths(Node* root) {
+    vector<string> ans;
+    if (!root) return ans;
+    string path = to_string(root->data);
+    allPaths(root, path, ans);
+    return ans;
+}
 
 //LC_662: maximum width of binary tree: max no. of nodes in one level of complete binary tree
 int widthOfBinaryTree(Node* root) {
@@ -171,6 +192,51 @@ int widthOfBinaryTree(Node* root) {
         return maxWidth;
     }
 
+//LC_94:binary-tree-inorder-traversal(without recursion) by using IP
+vector<int> inorderTraversal(Node* root) {
+        Node* curr=root;
+        vector<int>ans;
+        while(curr!=NULL){
+            if(curr->left==NULL){ 
+                //printing curr then update to right of it
+                ans.push_back(curr->data);
+                curr=curr->right;
+            }
+            else{
+                //find Inorder predecessor
+                Node* IP=curr->left;
+                while(IP->right!=NULL && IP->right!=curr){
+                    IP=IP->right;
+                }   //IP mil gya
+
+                if(IP->right==NULL){    //checking connection create krna pdega
+                    IP->right=curr; //creating thread with curr
+                    curr=curr->left;
+                }
+                else{   //agr connection already exist krta hai
+                    IP->right=NULL; //deleting that linked thread
+                    ans.push_back(curr->data);
+                    curr=curr->right;
+                }
+            }
+        }
+    return ans;
+}
+
+// LC_114:Flatten Binary Tree to Linked List
+Node* nextRight=NULL;
+void flatten(Node* root){
+    if(root==NULL){
+        return;
+    }
+    flatten (root->right);
+    flatten (root->left);
+    root->left=NULL;
+    root->right=nextRight;
+    nextRight=root;
+    
+}
+
 
 int main(){
 
@@ -194,8 +260,38 @@ int main(){
 
     //5. Printing of Kth level of Binary Tree
     kthlevel(root,2);
-
+    cout<<endl;
+    //6. Binary Tree Path - returning all possible path
+    vector<string> paths = binaryTreePaths(root);
     
+    cout << "All root-to-leaf paths:\n";
+    for (string path : paths) {
+        cout << path << endl;
+    }
+    
+    //7. maximum width of binary tree
+    cout<<"Here's max - width";
+    cout<<widthOfBinaryTree(root);
+
+    //8. MORRIS binary-tree-inorder-traversal
+    vector<int> inOrder = inorderTraversal(root);
+        cout << "\nInorder Traversal: ";
+    for (int val : inOrder) {
+        cout << val << " ";
+    }
+    cout << endl;
+    
+    //9. flatten BT to linked list
+    // cout<<flatten(root); //it return nothing cuzz void return type in cout
+    flatten(root);
+    cout << "Flattened tree (right-skewed list): ";
+    Node* curr = root;
+    while (curr != NULL) {  //printing that list now
+        cout << curr->data << " ";
+        curr = curr->right;
+    }
+    cout << endl;
+
 
     return 0;
 }
