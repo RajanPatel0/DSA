@@ -1,0 +1,165 @@
+#include<iostream>
+#include<queue>
+#include<stack>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+class Node{
+public:
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val){
+        data=val;
+        left=right=NULL;
+    }
+};
+
+//1. creating/Inserting (arr nodes) in BST
+Node* insert(Node*root, int val){   //To insert one single Node
+    if(root==NULL){
+        return new Node(val);
+    }
+    if(val<root->data){
+        root->left=insert(root->left, val);
+    }
+    if(val>root->data){
+        root->right=insert(root->right, val);
+    }
+    return root;
+}
+
+Node* buildBST(vector<int> arr){    //To insert all of the values for entire tree
+    Node* root=NULL;
+    for(int val: arr){
+        root = insert(root, val);
+    }
+    return root;
+}
+
+//Now we'll create an inorder function for verify/Print BST
+void inOrder(Node*root){
+    if(root==NULL){
+        return ;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    inOrder(root->right);
+}
+
+
+//2. Search In BST
+bool search(Node* root, int key){
+    if(root==NULL){
+        return false;
+    }
+    if(root->data==key){    //either we finds ans
+        return true;
+    }
+    if(key < root->data){   //or go left
+        return search(root->left, key);
+    }else{      //or go right
+        return search(root->right, key);
+    }
+}
+
+//3. Delete In BST: ( possible by finding key has how many children)
+
+Node* getIS(Node* root){    //(leftmost Node in right sub Tree)-aise node jha root ki left NULL ho jaaye
+    while(root !=NULL && root->left!=NULL){
+        root=root->left;
+    }
+    return root;
+}
+Node* delNode(Node* root, int key){
+    if(root==NULL){ //first step- searching of key Node
+        return NULL;        
+    }
+    if(key<root->data){
+        root->left = delNode(root->left, key);
+    }else if(key>root->data){
+        root->right = delNode(root->right, key);
+    }else{  //main step actual deletion
+        if(root->left==NULL){   //0, 1 children case: Attaching Not Null wla child above(if 1 child)
+            Node*temp=root->right;
+            delete root;
+            return temp;    //means returning NULL(if 0 child case) OR back join right wla(if 1-right child case)
+        }else if(root->right==NULL){
+            Node* temp= root->left;
+            delete root;
+            return temp;    //means returning NULL(if 0 child case) OR back join left wla(if 1-left child case)
+        }else{  //2 children exist case
+            Node* IS= getIS(root->right);   //inorder successor-just right wla
+                root->data = IS->data;  //mtlb jo delete krna hai(jiske 2 child hai)-usme uske IS(just right=leftmost of rightsubtree) ko store kra do
+                root->right = delNode(root->right, IS->data);   //or ye del wle ke right wla ab uper chala gya so ye bhi delete
+        }
+    }
+    return root;
+}
+
+//LC_108: Convert Sorted Array to Balanced(both side have same no. children) BST
+Node* helper(vector<int>& nums, int st, int end){
+    if(st>end){
+        return NULL;
+    }
+    int mid = st+(end-st)/2;
+    Node* root= new Node(nums[mid]);
+    root->left=helper(nums, st, mid-1);
+    root->right=helper(nums, mid+1, end);
+    return root;
+}
+
+Node* arrToBST(vector<int>& nums){
+    return helper(nums, 0,nums.size()-1);
+}
+
+//LC_98: Validate a BST(leftMax < root < rightMin)
+bool isBST(Node* root, Node*min, Node* max){
+    if(root==NULL){
+        return true;
+    }
+    if(min!=NULL && root->data<=min->data){  //these 2 loops
+        return false;
+    }
+    if(max!=NULL && root->data>=max->data){
+        return false;
+    }
+
+    return isBST(root->left, min,root)&&
+    isBST(root->right, root, max);
+}
+bool isValid(Node* root){
+    return isBST(root, NULL, NULL);
+}
+
+
+int main(){
+    vector<int> arr={3,2,1,5,6,4};
+
+    //1. Inserting (arr nodes) in BST
+    Node* root=buildBST(arr);
+    //Printing BST Now(via inorder only cuzz only this one supports BST property)
+    inOrder(root);
+
+    //2. Searching in BST
+    cout<<endl<<search(root,7)<<endl;
+
+    //3. Delete In BST
+    delNode(root, 6);
+    cout<<"after Delete: "<<endl;
+    inOrder(root);
+    cout<<endl;
+    
+    //LC_108: Convert Sorted Array to Balanced BST
+    vector<int> arr2={-10,-3,0,5,9};
+    Node* ans=arrToBST(arr2);
+    cout << "Inorder Traversal of BST: ";
+    inOrder(ans);
+    cout << endl;
+
+    //LC_98: Validate a BST
+    cout<<isValid(root)<<endl;
+
+    return 0;
+}

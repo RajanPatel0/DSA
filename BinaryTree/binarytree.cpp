@@ -86,7 +86,6 @@ void postOrderTraversal(Node* root){
     cout<<root->data<<" ";  //N
 }
 
-
 void buildFromLevelOrder(Node* &root){
     queue<Node*>q;
     cout<<"Enter data for Root Node: "<<endl; 

@@ -33,7 +33,7 @@ Node* BuildTree(vector<int> preOrder){
     return root; 
 };
 
-// 3 DFS Approaches
+// 3 DFS Approaches::
 //PREORDER TRAVERSAL: Root->left->right
 void preorder(Node* root){
     if(root==NULL){
@@ -123,15 +123,16 @@ int main(){
         preorder(root);
         cout<<endl;
 
-        // inorder(root);
-        // cout<<endl;
+        inorder(root);
+        cout<<endl;
 
-        // postorder(root);
-        // cout<<endl;
+        postorder(root);
+        cout<<endl;
 
-        // levelOrder(root);
+        cout<<"Here Level Order Traveral:"<<endl;
+        levelOrder(root);
 
-        sumTree(root);
+        cout<<"sum of tree: "<<sumTree(root)<<endl;
 
         cout<<"after conversion: "<<endl; 
         preorder(root);
