@@ -2,6 +2,7 @@
 #include<queue>
 #include<stack>
 #include<algorithm>
+#include <climits>
 #include<vector>
 using namespace std;
 
@@ -134,8 +135,56 @@ bool isValid(Node* root){
 }
 
 
+//LC_783: minimum distance between bst nodes
+
+    Node* prevNode=NULL;
+    int minDiffInBST(Node* root) {
+        if(root==NULL){
+            return INT8_MAX;
+        }
+        int ans=INT8_MAX;
+
+        if(root->left!=NULL){
+            int leftMin=minDiffInBST(root->left);
+            ans=min(ans, leftMin);
+        }
+        if(prevNode!=NULL){
+            ans=min(ans,root->data - prevNode->data); //1-0 for 1 leaf
+        }        
+        prevNode=root;
+
+        if(root->right!=NULL){
+            int rightMin=minDiffInBST(root->right);
+            ans=min(ans, rightMin);
+        }
+        return ans;
+    }
+
+
+    //LC_230:
+    int prevOrder = 0;
+    int kthSmallest(Node* root, int k) {
+        if (root == NULL) return -1;
+
+        if (root->left) {
+            int leftAns = kthSmallest(root->left, k);
+            if (leftAns != -1) return leftAns;
+        }
+
+        if (prevOrder + 1 == k) return root->data;
+        prevOrder++;
+
+        if (root->right) {
+            int rightAns = kthSmallest(root->right, k);
+            if (rightAns != -1) return rightAns;
+        }
+
+        return -1;
+    }
+
+
 int main(){
-    vector<int> arr={3,2,1,5,6,4};
+    vector<int> arr={6,4,1,10,12,8};
 
     //1. Inserting (arr nodes) in BST
     Node* root=buildBST(arr);
@@ -160,6 +209,14 @@ int main(){
 
     //LC_98: Validate a BST
     cout<<isValid(root)<<endl;
+
+    //LC_783: minimum distance between bst nodes
+    cout<<minDiffInBST(root);
+    cout<<endl;
+
+    //LC_230:
+    cout<<kthSmallest(root,4);
+
 
     return 0;
 }

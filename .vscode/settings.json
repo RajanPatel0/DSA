@@ -44,5 +44,6 @@
         "typeinfo": "cpp",
         "list": "cpp",
         "queue": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
