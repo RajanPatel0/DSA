@@ -111,6 +111,7 @@ Node* helper(vector<int>& nums, int st, int end){
     return root;
 }
 
+
 Node* arrToBST(vector<int>& nums){
     return helper(nums, 0,nums.size()-1);
 }
@@ -134,57 +135,91 @@ bool isValid(Node* root){
     return isBST(root, NULL, NULL);
 }
 
+//LC_783: Minimum distance b/w BST Nodes
+Node* prevNode=NULL;
+int minDiffInBST(Node* root) {
+    if(root==NULL){
+        return INT8_MAX;
+    }
+    int ans=INT8_MAX;
 
-//LC_783: minimum distance between bst nodes
+    if(root->left!=NULL){
+        int leftMin=minDiffInBST(root->left);
+        ans=min(ans, leftMin);
+    }
+    if(prevNode!=NULL){
+        ans=min(ans,root->data - prevNode->data); //1-0 for 1 leaf
+    }        
+    prevNode=root;
 
-    Node* prevNode=NULL;
-    int minDiffInBST(Node* root) {
-        if(root==NULL){
-            return INT8_MAX;
-        }
-        int ans=INT8_MAX;
+    if(root->right!=NULL){
+        int rightMin=minDiffInBST(root->right);
+        ans=min(ans, rightMin);
+    }
+    return ans;
+}
 
-        if(root->left!=NULL){
-            int leftMin=minDiffInBST(root->left);
-            ans=min(ans, leftMin);
-        }
-        if(prevNode!=NULL){
-            ans=min(ans,root->data - prevNode->data); //1-0 for 1 leaf
-        }        
-        prevNode=root;
+//LC_230: Kth Smallest In BST
+int prevOrder = 0;
+int kthSmallest(Node* root, int k) {
+    if (root == NULL) return -1;
 
-        if(root->right!=NULL){
-            int rightMin=minDiffInBST(root->right);
-            ans=min(ans, rightMin);
-        }
-        return ans;
+    if (root->left) {
+        int leftAns = kthSmallest(root->left, k);
+        if (leftAns != -1) return leftAns;
     }
 
+    if (prevOrder + 1 == k) return root->data;
+    prevOrder++;
 
-    //LC_230:
-    int prevOrder = 0;
-    int kthSmallest(Node* root, int k) {
-        if (root == NULL) return -1;
+    if (root->right) {
+        int rightAns = kthSmallest(root->right, k);
+        if (rightAns != -1) return rightAns;
+    }
 
-        if (root->left) {
-            int leftAns = kthSmallest(root->left, k);
-            if (leftAns != -1) return leftAns;
+    return -1;
+}
+
+//LC_235: Lowest Common Ancestor In BST
+Node* LCA(Node* root, Node*p, Node*q){
+    if(root==NULL){
+        return NULL;
+    }
+    if(p->data<root->data && q->data<root->data){
+        LCA(root->left,p,q);
+    }
+    else if(p->data>root->data && q->data>root->data){
+        LCA(root->right,p,q);
+    }else{
+        return root;
+    }
+}
+
+Node* searchConvert(Node* root, int key) { //helper to convert / find a node by value
+    if (!root || root->data == key) return root;
+    if (key < root->data)
+        return searchConvert(root->left, key);
+    return searchConvert(root->right, key);
+}
+
+//LC_700: Search in a Binary Search Tree
+    Node* searchBST(Node* root, int val) {
+        if(root==NULL){
+            return NULL;
         }
-
-        if (prevOrder + 1 == k) return root->data;
-        prevOrder++;
-
-        if (root->right) {
-            int rightAns = kthSmallest(root->right, k);
-            if (rightAns != -1) return rightAns;
+        if(val<root->data){
+            return searchBST(root->left, val);
         }
-
-        return -1;
+        else if(val>root->data){
+            return searchBST(root->right, val);
+        }else{
+            return root;
+        }
     }
 
 
 int main(){
-    vector<int> arr={6,4,1,10,12,8};
+    vector<int> arr={5,3,6,2,4,1};
 
     //1. Inserting (arr nodes) in BST
     Node* root=buildBST(arr);
@@ -211,12 +246,20 @@ int main(){
     cout<<isValid(root)<<endl;
 
     //LC_783: minimum distance between bst nodes
-    cout<<minDiffInBST(root);
-    cout<<endl;
+    cout<<minDiffInBST(root)<<endl;
 
-    //LC_230:
-    cout<<kthSmallest(root,4);
+    //LC_230: Kth Smallest In BST
+    cout<<kthSmallest(root,3)<<endl;
 
+    //LC_235: LCA in BST
+    Node* p = searchConvert(root, 5);
+    Node* q = searchConvert(root, 2);
+    Node* ans3 = LCA(root, p, q);
+    cout<<ans3->data<<endl;
+
+    //LC_700: Search till in a Binary Search Tree
+    Node* ans4=searchBST(root, 2);
+    inOrder(ans4);
 
     return 0;
 }
