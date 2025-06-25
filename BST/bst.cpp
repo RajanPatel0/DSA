@@ -170,7 +170,7 @@ int kthSmallest(Node* root, int k) {
     }
 
     if (prevOrder + 1 == k) return root->data;
-    prevOrder++;
+    prevOrder++; 
 
     if (root->right) {
         int rightAns = kthSmallest(root->right, k);
@@ -217,6 +217,59 @@ Node* searchConvert(Node* root, int key) { //helper to convert / find a node by 
         }
     }
 
+//Que: InOrder Predecessor & Successor
+// vector<vector<int, int>> predsucc(Node* root, int key){
+//     Node* temp=root;
+//     int pred=-1;
+//     int succ=-1;
+
+//     while(temp->data!=key){
+//         if(temp->data<key){
+//             pred=temp->data;
+//             temp=temp->right;
+//         }else{
+//             succ=temp->data;
+//             temp=temp->left;
+//         }
+//     }
+
+//     Node* leftTree=temp->temp->left;
+//     while(leftTree!=NULL){
+//         pred=left->data;
+//         leftTree=leftTree->right;
+//     }
+//         Node* rightTree=temp->temp->right;
+//     while(rightTree!=NULL){
+//         succ=rightTree->data;
+//         rightTree=rightTree->left;
+//     }
+//     vector<vector<int,int >>ans= pair(pred,succ);
+//     return ans;
+// }
+
+//LC_1382:Balance a BST
+    void inorder(Node* root, vector<int>& nodes) {  //gives sorted
+        if (!root) return;
+        inorder(root->left, nodes);
+        nodes.push_back(root->data);
+        inorder(root->right, nodes);
+    }
+
+    Node* buildBST(vector<int>& nodes, int start, int end) {    //making balanced tree from inorder
+        if (start > end) return nullptr;
+        int mid = start + (end - start) / 2;
+        Node* root = new Node(nodes[mid]);
+        root->left = buildBST(nodes, start, mid - 1);
+        root->right = buildBST(nodes, mid + 1, end);
+        return root;
+    }
+
+    Node* balanceBST(Node* root) {
+        vector<int> nodes;  //used for getting sorted array
+        inorder(root, nodes);  // get sorted values via help of nodes
+        return buildBST(nodes, 0, nodes.size() - 1);
+    }
+
 
 int main(){
     vector<int> arr={5,3,6,2,4,1};
@@ -260,6 +313,15 @@ int main(){
     //LC_700: Search till in a Binary Search Tree
     Node* ans4=searchBST(root, 2);
     inOrder(ans4);
+    cout<<endl;
+
+    //LC_1382
+    // Node* root = createSkewedBST();
+    Node* balanced = balanceBST(root);
+
+    cout << "Inorder of balanced BST: ";
+    inOrder(balanced);
+    cout << endl;
 
     return 0;
 }
