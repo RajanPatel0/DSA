@@ -5,6 +5,16 @@
 #include <climits>
 #include<vector>
 using namespace std;
+class ListNode {
+public:
+    int val;
+    ListNode* next;
+    // ListNode(int x) : val(x), next(nullptr) {}
+    ListNode (int x){
+        val=x;
+        next=NULL;
+    }
+};
 
 class Node{
 public:
@@ -22,7 +32,7 @@ Node* insert(Node*root, int val){   //To insert one single Node
     if(root==NULL){
         return new Node(val);
     }
-    if(val<root->data){
+    if(val<root->data){ 
         root->left=insert(root->left, val);
     }
     if(val>root->data){
@@ -104,13 +114,12 @@ Node* helper(vector<int>& nums, int st, int end){
     if(st>end){
         return NULL;
     }
-    int mid = st+(end-st)/2;
+    int mid = st+(end-st)/2; 
     Node* root= new Node(nums[mid]);
     root->left=helper(nums, st, mid-1);
     root->right=helper(nums, mid+1, end);
     return root;
 }
-
 
 Node* arrToBST(vector<int>& nums){
     return helper(nums, 0,nums.size()-1);
@@ -203,7 +212,7 @@ Node* searchConvert(Node* root, int key) { //helper to convert / find a node by 
 }
 
 //LC_700: Search in a Binary Search Tree
-    Node* searchBST(Node* root, int val) {
+Node* searchBST(Node* root, int val) {
         if(root==NULL){
             return NULL;
         }
@@ -248,14 +257,14 @@ Node* searchConvert(Node* root, int key) { //helper to convert / find a node by 
 // }
 
 //LC_1382:Balance a BST
-    void inorder(Node* root, vector<int>& nodes) {  //gives sorted
+    void inorder(Node* root, vector<int>& nodes) {  //gives sorted nodes(for use) of tree data
         if (!root) return;
         inorder(root->left, nodes);
         nodes.push_back(root->data);
         inorder(root->right, nodes);
     }
 
-    Node* buildBST(vector<int>& nodes, int start, int end) {    //making balanced tree from inorder
+    Node* buildBST(vector<int>& nodes, int start, int end) {    //making balanced tree from inorder(nodes-sorted)
         if (start > end) return nullptr;
         int mid = start + (end - start) / 2;
         Node* root = new Node(nodes[mid]);
@@ -264,12 +273,65 @@ Node* searchConvert(Node* root, int key) { //helper to convert / find a node by 
         return root;
     }
 
-    Node* balanceBST(Node* root) {
+    Node* balanceBST(Node* root) {  //here need to convert cuzz unsorted is given sometime
         vector<int> nodes;  //used for getting sorted array
         inorder(root, nodes);  // get sorted values via help of nodes
         return buildBST(nodes, 0, nodes.size() - 1);
     }
 
+
+//LC_109: Convert Sorted List to Binary Search Tree
+void listToVector(ListNode* head, vector<int> & arr){   //for changing sorted data structure: list to vector
+    while(head){   
+        arr.push_back(head->val);
+        head=head->next;
+    }
+}
+
+Node* solve( vector<int> & arr, int st, int e){ //balancing easy on vector data structure then in node
+    if(st>e){
+        return NULL;
+    }
+    int mid=st+(e-st)/2;
+    Node* root= new Node(arr[mid]);
+    root->left=solve(arr, st, mid-1);
+    root->right=solve(arr, mid+1, e);
+        return root;
+}
+
+Node*  sortedListToBST(ListNode* head){ //main function for callling output via (solve & list to vector )
+    vector<int> arr;  
+    listToVector(head,arr);
+    return solve(arr,0,arr.size()-1);
+}
+
+// ✅ Helper: Create sorted linked list for testing
+ListNode* createSortedList(const vector<int>& vals) {
+    if (vals.empty()) return nullptr;
+    ListNode* head = new ListNode(vals[0]);
+    ListNode* current = head;
+    for (int i = 1; i < vals.size(); ++i) {
+        current->next = new ListNode(vals[i]);
+        current = current->next;
+    }
+    return head;
+}
+
+//LC_1008: Construct Binary Search Tree from Preorder Traversal
+    Node* building(vector<int>& preorder,int &i, int bound){
+        if(i >= preorder.size() || preorder[i]>bound){  //base case
+            return NULL;
+        }
+        Node* root= new Node(preorder[i++]);
+        root->left=building(preorder, i, root->data);  //here for this bound is root ki value
+        root->right=building(preorder, i, bound); //here bound in INT_MAX
+        return root;
+    }
+
+    Node* bstFromPreorder(vector<int>& preorder) {
+        int i=0;
+        return building(preorder,i,INT8_MAX);
+    }
 
 int main(){
     vector<int> arr={5,3,6,2,4,1};
@@ -289,7 +351,7 @@ int main(){
     cout<<endl;
     
     //LC_108: Convert Sorted Array to Balanced BST
-    vector<int> arr2={-10,-3,0,5,9};
+    vector<int> arr2={8,5,1,7,10,12};
     Node* ans=arrToBST(arr2);
     cout << "Inorder Traversal of BST: ";
     inOrder(ans);
@@ -315,13 +377,32 @@ int main(){
     inOrder(ans4);
     cout<<endl;
 
-    //LC_1382
-    // Node* root = createSkewedBST();
+    //LC_1382: Balance a BST
     Node* balanced = balanceBST(root);
 
     cout << "Inorder of balanced BST: ";
     inOrder(balanced);
     cout << endl;
+
+    //LC_109: Convert Sorted List to Binary Search Tree
+    vector<int> input = {-10, -3, 0, 5, 9};
+    ListNode* head = createSortedList(input);
+
+    // Convert to BST
+    Node* ans5 = sortedListToBST(head);
+
+    // Print inorder of resulting BST
+    cout << "Inorder traversal for sorted list to balanced BST:";
+    inOrder(ans5);
+    cout << endl;
+
+
+    //LC_1008: Construct Binary Search Tree from Preorder Traversal
+    Node* ans6=bstFromPreorder(arr2);
+    cout << "Inorder Traversal of BST from PreOrder: ";
+    inOrder(ans6);
+    cout << endl;
+
 
     return 0;
 }
