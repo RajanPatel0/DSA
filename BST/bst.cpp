@@ -333,6 +333,38 @@ ListNode* createSortedList(const vector<int>& vals) {
         return building(preorder,i,INT8_MAX);
     }
 
+//que: Two Sum In a BST
+//sorting function:
+void inordr(Node* root, vector<int>& ino){
+    if(root==NULL){
+        return ;
+    }
+    inordr(root->left, ino);
+    ino.push_back(root->data);
+    inordr(root->right, ino);
+}
+
+//2-pointer wla main function:
+bool TwoSumBST(Node* root, int target){
+    vector<int> inorderVal;
+    inordr(root, inorderVal);
+    
+    int i=0, j=inorderVal.size()-1;
+    while(i<j){
+        int sum=inorderVal[i]+inorderVal[j];
+        if(sum==target){
+            return true;
+        }
+        else if(sum>target){
+            j--;
+        }else{
+            i++;
+        }
+    }
+    return false;
+}
+
+
 int main(){
     vector<int> arr={5,3,6,2,4,1};
 
@@ -403,6 +435,9 @@ int main(){
     inOrder(ans6);
     cout << endl;
 
+    //que:Two sum in BST:
+    cout<<"Checking BST is Two Sum or Not: ";
+    cout<<TwoSumBST(root, 12); //12 is not formed by adding two:0
 
     return 0;
 }
