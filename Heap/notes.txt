@@ -1,0 +1,21 @@
+Heap= It's a complete binary tree that comes with a heap order property
+
+*CBT= all nodes level is completely filled except last leaf level
+       or always moves from left to right
+
+*Heap Order Property = two types (maxi, mini)
+
+*max Heap= every node child has value less than parent
+*min Heap= every child node has value more than parent (means parent node is less than child)
+
+Implementation using array= [x,60,50,40,30, 20]
+
+if:
+Node= ith index
+then:
+left child= 2*ith index
+right child= (2*i+1)th index
+
+parent = (i/2)th index
+
+*Insertion In Heap: 
