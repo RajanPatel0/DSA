@@ -24,10 +24,6 @@ class Heap{
             }
         }
     }
-
-    https://chat.whatsapp.com/HTk1HUyPlGQKpHgMDBpEFW
-
-    https://chat.whatsapp.com/C73iEJw0nRhCH46UHpATtd
     void print(){
         for(int i=1; i<=size; i++){
             cout<<arr[i]<<" ";
@@ -46,7 +42,7 @@ int main(){
     h.insert(52);
     h.insert(54);
     
-    h.print();
+    h.print();  //for printing output
 
 
     return 0;
