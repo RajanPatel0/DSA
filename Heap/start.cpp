@@ -36,11 +36,11 @@ class Heap{
 int main(){
 
     Heap h;
-    h.insert(50);
-    h.insert(55);
-    h.insert(53);
-    h.insert(52);
-    h.insert(54);
+    h.insert(60);
+    h.insert(65);
+    h.insert(63);
+    h.insert(62);
+    h.insert(64);
     
     h.print();  //for printing output
 
