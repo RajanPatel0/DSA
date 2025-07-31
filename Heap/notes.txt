@@ -19,3 +19,18 @@ right child= (2*i+1)th index
 parent = (i/2)th index
 
 *Insertion In Heap: 
+
+*Deletion: 1. Last ki node ko root pe daal(swap) do     a[1]=a[n]
+2. Remove last node i.e. (wo root hoga)
+3. Propagate root node to its correct position(by comparing it to its childrens)
+4. Repeat above steps then if more is to delete
+
+*Magic: By using Heap
+1. we can get leaf node of CBT as from index (n/2+1)th to nth 
+
+2. So if we processing nodes from 1 to n nodes then
+       we dont need to process nodes of index (n/2+1) to nth node cuzz it is leaf node && heap in itself
+
+       Hence we process only from (1) to n/2th index nodes || n/2 to >0
+
+3. Heapify function work: ik node ko uski shi jagah pe lekr jaana 
